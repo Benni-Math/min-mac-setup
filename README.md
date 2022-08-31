@@ -22,9 +22,7 @@ and then you just need to go to iTerm2 Preferences/Appearance and change Theme t
 next go to Iterm2 Preferences/Profiles and select 'min-iterm',
 and then finally insert GitHub and AWS account information.
 
-For those who are skeptical, the `install.sh` file does the following:
- - copy all the dotfiles (except `.git`) into your `$HOME`, also known as `~`, directory
- - and then just running all of the code-blocks to download all of the tools
+For those who want to do this manually or want to customize the setup, you can follow along with the guide.
 
 ## Table of Contents
  - [Homebrew](#homebrew)
@@ -51,12 +49,24 @@ The first step is to download a package manager, and the de-facto choice for Mac
 This will also install the [XCode Developer Tools](https://developer.apple.com/xcode/features/),
 meaning that it will also install the most important developer tool out there: [**Git**](https://git-scm.com).
 
+Now that we have Git, we can clone down this repository:
+```
+git clone https://github.com/Benni-Math/min-mac-setup.git ~/Downloads/min-mac-setup/
+export MIN_SETUP="~/Downloads/min-mac-setup"
+```
+(Note: you don't need to clone into the Downloads folder.)
+
 Let's quickly go over the [`.gitcongif`](./.gitcongif) and [`.gitignore`](./.gitignore) files.
 For the gitconfig, we essentially just set email and username, corresponding to [GitHub](https://github.com) accounts,
 and then we set the 'global' gitignore (so, files that are ignored in every git repository)
 and a set of aliases for prettier `git log` printing.
-
-Here is where we really start to get going on the setup!
+The `.gitignore` sets global ignores for `*.swp` files (Vim swap) and the MacOS specific `.DS_STORE`.
+Copy those over to your $HOME:
+```
+cp $MIN_SETUP/.gitconfig ~/.gitconfig
+cp $MIN_SETUP.gitignore ~/.gitignore
+```
+and the insert your GitHub information in `.gitconfig`. Here is where we really start to get going on the setup!
 
 ## iTerm2
 
@@ -65,16 +75,22 @@ Download iTerm2 with
 brew install --cask iterm2
 ```
 
+Install the fonts (or pick your own):
+```
+$MIN_SETUP/Hack.ttf
+$MIN_SETUP/PowerLine.otf
+```
+
 and then change copy the `min-iter.json` file into `iTerm2`'s Dynamic Profile folder:
 ```
-cp ./min-iter.json ~/Library/Application\ Support/iTerm2/DynamicProfiles
+cp $MIN_SETUP/min-iterm.json ~/Library/Application\ Support/iTerm2/DynamicProfiles/min-iterm.json
 ```
 
 Next up, the only non-command line portion, you need to open iTerm2, open Preferences, and:
  - change Appearance/Theme to 'Minimal'
  - change Profiles to 'min-iterm'
 
-For the rest of the stuff, run the commands through iTerm2.
+For the rest of the stuff, you can run the commands through iTerm2.
 
 ## Oh-My-ZSH
 
@@ -84,40 +100,64 @@ which you can download with
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
-Then, we 
+Next, we download the [zsh-autosuggestion](https://github.com/zsh-users/zsh-autosuggestions) plugin with
+```
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+```
+
+Then, we copy copy and set the `.zshrc`
+```
+cp $MIN_SETUP/.zshrc ~/.zshrc
+source ~/.zshrc
+```
 
 ## Vim
+
+Vim is already installed, but we need to add the [NeoSolarized](https://github.com/overcache/NeoSolarized) color theme
+and the [gitgutter](https://github.com/airblade/vim-gitgutter) extension, 
+which we just copy over and activate:
+```
+cp -R $MIN_SETUP/.vim ~/.vim
+vim -u NONE -c "helptags vim-gitgutter/doc" -c q
+```
+
+Then, we copy over the config files:
+```
+cp $MIN_SETUP/.vimrc ~/.vimrc
+```
 
 ### NeoVim
 
 Since this is a minimal setup, we won't get into NeoVim, but if you want to 
 beef up your editor while maintaining the Vim feel, I recommend looking into
-some other tutorials:
- - devaslife
+some other tutorials, like this one by 
+[devaslife](https://blog.inkdrop.app/how-to-set-up-neovim-0-5-modern-plugins-lsp-treesitter-etc-542c3d9c9887)
+or any other '.nvim' repos shared by people on 'r/NeoVim' or whatever.
 
 ## tmux
 
-The final core command-line tool is [tmux](), for which I use a pre-made setup (with some added commands)
-from [oh-my-tmux](). So, we run the following commands:
+The final core command-line tool is [tmux](https://github.com/tmux/tmux/wiki), for which I use a pre-made setup 
+(with some added commands) from [oh-my-tmux](https://github.com/gpakosz/.tmux). So, we run the following commands:
 ```
-git clone ...
+git clone https://github.com/gpakosz/.tmux.git $MIN_SETUP/oh-my-tmux
+ln -s -f $MIN_SETUP/oh-my-tmux/.tmux.conf ~/.tmux.conf 
 ```
 
 and then copy the local tmux configurations from this repo:
 ```
-cp 
+cp $MIN_SETUP/.tmux.conf.local ~/.tmux.conf.local
 ```
 
 ## More CLI tools
 
-I also like to use [ripgrep](), which I download with
+I also like to use [ripgrep](https://github.com/BurntSushi/ripgrep), which I download with
 ```
 brew install ripgrep
 ```
 
 and then I activate the 'locate' utility which is built into Macs:
 ```
-
+sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
 ```
 
 ## Other Tools
@@ -127,17 +167,32 @@ For specific projects, these following tools are useful.
 ### AWS CLI
 
 Ever heard of microservices, cloud computing, serverless, or any other number of hot, new buzzwords?
+AWS is the cloud service that I most actively use, and so I usually like to 
+```
+brew install awscli
+```
+and then:
+```
+cp -R $MIN_SETUP/.aws ~/.aws
+```
+followed by setting your credentials in `~/.aws/credentials`.
+
+There are other tools which are helpful alongside this, like `cloudsentry` for managing credentials.
 
 ### Docker
 
-Docker is a widely used containerization service, 
+Docker is a widely used containerization service, and it can be easily installed with
+```
+brew install --cask docker
+```
+*Note*: this will install the Docker Desktop application.
 
 #### Alternatives to Docker
 
 Docker can be pretty heavy duty.
 
 If you don't want to use Docker, there are other open-source options that can be found at 
-[OCI](https://github.com/opencontainers)
+[OCI](https://github.com/opencontainers).
 
 ### Programming Languages
 
@@ -176,7 +231,7 @@ For other tools, usually the best first step is to simply try `brew search <tool
 or if that fails `google <tool>`.
 
 For example, if you prefer VSCode over (Neo)Vim, then a quick `brew search` gives us that you should try
-`brew install --cask vscode`.
+`brew install --cask visual-studio-code`.
 
 ## Alias Glossary
 
