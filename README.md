@@ -1,11 +1,7 @@
 # Ben's Minimal Mac Setup
 
 ##TODO:
- - add font downloads (Hack and Powerline)
- - add `min-iterm.json`
- - get stuff
- - create script
- - describe all
+ - test the install script
 
 This is a guide for getting a bare-bones Vim-based setup going on a Mac for software development.
 This may not be ideal for full on development, since there is no code analysis or GUI,
@@ -16,10 +12,10 @@ The only **prerequisite** for this setup is an Apple computer with MacOS and `cu
 If you're extra lazy, this guide is setup so that you can just download the 'run-setup' script 
 and just run it. This can be done entirely from the command line, like so:
 ```
-sh -c "$(curl install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/Benni-Math/min-mac-setup/install.sh)"
 ```
 and then you just need to go to iTerm2 Preferences/Appearance and change Theme to 'Minimal',
-next go to Iterm2 Preferences/Profiles and select 'min-iterm',
+next go to Iterm2 Preferences/Profiles and select 'min-iterm2',
 and then finally insert GitHub and AWS account information.
 
 For those who want to do this manually or want to customize the setup, you can follow along with the guide.
@@ -77,18 +73,18 @@ brew install --cask iterm2
 
 Install the fonts (or pick your own):
 ```
-$MIN_SETUP/Hack.ttf
-$MIN_SETUP/PowerLine.otf
+cp $MIN_SETUP/fonts/Hack-Regular.ttf ~/Library/Fonts/
+cp $MIN_SETUP/fonts/PowerlineSymbols.otf ~/Library/Fonts/
 ```
 
 and then change copy the `min-iter.json` file into `iTerm2`'s Dynamic Profile folder:
 ```
-cp $MIN_SETUP/min-iterm.json ~/Library/Application\ Support/iTerm2/DynamicProfiles/min-iterm.json
+cp $MIN_SETUP/min-iterm2.json ~/Library/Application\ Support/iTerm2/DynamicProfiles/min-iterm2.json
 ```
 
 Next up, the only non-command line portion, you need to open iTerm2, open Preferences, and:
  - change Appearance/Theme to 'Minimal'
- - change Profiles to 'min-iterm'
+ - change Profiles to 'min-iterm2'
 
 For the rest of the stuff, you can run the commands through iTerm2.
 

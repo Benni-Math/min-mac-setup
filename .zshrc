@@ -1,7 +1,12 @@
 # Path to your oh-my-zsh installation
 export ZSH="$HOME/.oh-my-zsh"
 
+# Change this to whatever you like!
 ZSH_THEME="agnoster"
+
+# If you don't want the user@hostname to show up
+# DEFAULT_USER=<insert_username>
+# prompt_context(){}
 
 plugins=(
     git
